@@ -1,7 +1,12 @@
 package policies;
+
+import java.util.LinkedList;
+
+import Main.Clerks;
+import Main.Customer;
+
 //Multiple Lines Multiple Servers
 public class MLMS {
-	int posts;
 
 	/*Under this policy, each service post has its own waiting line (one line per server).
 	 *  Once a person enters a waiting line, that person cannot transfer to another line, 
@@ -12,4 +17,113 @@ public class MLMS {
 	 *  (This happens often in lines for cars to pay at the toll gate on a highway; once you are
 	 *  in a line, it is hard to change to another, even if one becomes empty.)
 */
+	
+	int posts,nCustomers;
+	double time=-1;
+	private double averageTime=0;
+	private LinkedList<Customer> customers;
+	private LinkedList<Customer> waitingList;
+	private Clerks[]clerks;
+
+
+	public MLMS(LinkedList<Customer> customers,int posts) {
+		//pre:Customers list must be ordered.
+		this.nCustomers=customers.size();
+		this.customers=copy(customers);
+		this.posts=posts;
+		this.clerks=new Clerks[posts];
+		this.waitingList=new LinkedList<>();
+		createClerks();
+		
+	}
+
+	public void Simulate() {
+		while(!Finished()) {
+			time++;
+		for(Customer c: customers) {
+			if(c.getArrivalTime()==time) {
+				waitingList.add(c);
+			}
+		}
+		System.out.println(time+" "+waitingList.size());
+			addToPostDisponible();
+			Serve();
+			
+			
+		}	
+	}
+
+
+	public void addToPostDisponible() {
+		//Index of the clerks with the less people.
+		int lowIndex=clerks[0].getCustomers();
+		int index=0;
+		
+		for(int i=1;i<clerks.length;i++) {
+			if(clerks[i].getCustomers()<lowIndex)
+				index=i;
+		}
+			if(!waitingList.isEmpty()){
+				clerks[index].addCustomer(waitingList.removeFirst());
+			}
+		}
+		
+	
+	public void Serve() {
+		for(Clerks c: clerks) {
+		if(c.getCustomers()!=0) {
+			
+			if(c.getFirst().getServiceTime()!=0) {
+				c.getFirst().setServiceTime(c.getFirst().getServiceTime()-1);
+				System.out.println(time);
+				c.getFirst().setDepartureTime(c.getFirst().getDepartureTime()+1);
+			}
+			if(c.getFirst().getServiceTime()==0) {
+				System.out.println(time);
+				Customer tr=c.removeCustomer();
+				tr.setDepartureTime((int)time-tr.getArrivalTime());
+				System.out.println("DepartureTime="+tr.getDepartureTime());
+				averageTime=averageTime+tr.getDepartureTime();
+				customers.remove(tr);
+			}
+			
+			
+			
+		}
+		}
+	}
+	private LinkedList<Customer> copy(LinkedList<Customer>c) {
+		
+		LinkedList<Customer> copy= new LinkedList<>();
+		for(Customer x: c) {
+			copy.add(new Customer(x.getArrivalTime(),x.getServiceTime()));
+		}
+		return copy;
+	}
+
+	public double showAverageTime() {
+		return averageTime/nCustomers;
+	}
+	public int numberOfCustomer() {
+		return nCustomers;
+	}
+	public void createClerks() {
+		for(int i=0;i<posts;i++) {
+			clerks[i]=new Clerks(i);
+		}
+	}
+	public String getPolicy() {
+		return "MLMS";
+	}
+	public int postNumbers() {
+		return posts;
+	}
+	public double getTime() {
+		return time;
+	}
+	public boolean Finished() {
+		return customers.isEmpty();
+	}
+	
+
 }

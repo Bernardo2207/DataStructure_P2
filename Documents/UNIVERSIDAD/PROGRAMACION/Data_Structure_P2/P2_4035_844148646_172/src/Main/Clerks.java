@@ -22,7 +22,7 @@ private Customer c;
 		return  fila.size();
 	}
 	public void addCustomer(Customer c) {
-		fila.push(c);;
+		fila.add(c);
 		
 	}
 	public Customer getFirst() {

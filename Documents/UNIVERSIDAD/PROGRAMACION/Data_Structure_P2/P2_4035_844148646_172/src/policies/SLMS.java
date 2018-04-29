@@ -17,7 +17,7 @@ private Clerks[]clerks;
 public SLMS(LinkedList<Customer> customers,int posts) {
 	//pre:Customers list must be ordered.
 	this.nCustomers=customers.size();
-	this.customers=customers;
+	this.customers=copy(customers);
 	this.posts=posts;
 	this.clerks=new Clerks[posts];
 	this.waitingList=new LinkedList<>();
@@ -32,9 +32,10 @@ public void Simulate() {
 			waitingList.add(c);
 		}
 	}
+	time++;
 		addToPostDisponible();
 		Serve();
-		time++;
+		
 	}	
 }
 
@@ -52,31 +53,52 @@ public void Serve() {
 	for(Clerks c: clerks) {
 	if(c.getCustomers()!=0) {
 		if(c.getFirst().getServiceTime()==0) {
-			
+			System.out.println(time);
 			Customer tr=c.removeCustomer();
-			tr.setDepartureTime((int)time-tr.getArrivalTime());
+			tr.setDepartureTime((int)time-tr.getArrivalTime()-tr.getDepartureTime());
 			System.out.println("DepartureTime="+tr.getDepartureTime());
-			averageTime=+tr.getDepartureTime();
+			averageTime=averageTime+tr.getDepartureTime();
 			customers.remove(tr);
 		}
 		if(c.getCustomers()!=0) {
 			c.getFirst().setServiceTime(c.getFirst().getServiceTime()-1);
-			
+			//System.out.println(time);
 			c.getFirst().setDepartureTime(c.getFirst().getDepartureTime()+1);
 		}
 		
-		System.out.println(time);
+		
 		
 	}
 	}
 }
-public double showAvergaeTime() {
+private LinkedList<Customer> copy(LinkedList<Customer>c) {
+	
+	LinkedList<Customer> copy= new LinkedList<>();
+	for(Customer x: c) {
+		copy.add(new Customer(x.getArrivalTime(),x.getServiceTime()));
+	}
+	return copy;
+}
+
+public double showAverageTime() {
 	return averageTime/nCustomers;
+}
+public int numberOfCustomer() {
+	return nCustomers;
 }
 public void createClerks() {
 	for(int i=0;i<posts;i++) {
 		clerks[i]=new Clerks(i);
 	}
+}
+public String getPolicy() {
+	return "SMS";
+}
+public int postNumbers() {
+	return posts;
+}
+public double getTime() {
+	return time;
 }
 public boolean Finished() {
 	return customers.isEmpty();

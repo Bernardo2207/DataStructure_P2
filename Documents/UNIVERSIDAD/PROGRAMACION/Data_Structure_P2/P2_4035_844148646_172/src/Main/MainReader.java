@@ -7,35 +7,65 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+import policies.MLMS;
 import policies.SLMS;
 
 public class MainReader {
 
 	public static void main(String[] args) {
 		//Instace of Deque
+		LinkedList<LinkedList<Customer>>alpha= theData();
 		LinkedList<Customer>x= new LinkedList<>();
-		Customer a= new Customer(0,5);
-		Customer b= new Customer(1,5);
-		Customer c= new Customer(2,10);
-		Customer cd= new Customer(3,5);
-		Customer a1=new Customer(5,5);
-		x.add(a);
-		x.add(b);
-		x.add(c);
-		x.add(cd);
-		x.add(a1);
-		SLMS q= new SLMS(x,1);
+//		Customer a= new Customer(0,5);
+//		Customer b= new Customer(1,5);
+//		Customer c= new Customer(2,10);
+//		Customer cd= new Customer(3,5);
+//		Customer a1=new Customer(5,5);
+//		x.add(a);
+//		x.add(b);
+//		x.add(c);
+//		x.add(cd);
+//		x.add(a1);
+		x.add(new Customer(0,1));
+		x.add(new Customer(0,1));
+		x.add(new Customer(0,2));
+//		x.add(new Customer(1,3));
+//		x.add(new Customer(1,4));
+//		x.add(new Customer(2,1));
+//		x.add(new Customer(2,1));
+//		x.add(new Customer(2,1));
+//		x.add(new Customer(2,1));
+//		x.add(new Customer(3,4));
+//		x.add(new Customer(3,3));
+//		x.add(new Customer(3,2));
+//		x.add(new Customer(3,1));
+		
+		MLMS q= new MLMS(x,5);
 		
 		q.Simulate();
-		System.out.println(q.showAvergaeTime());
+		System.out.println(q.getPolicy()+" "+q.postNumbers()+" :"+q.getTime()+"  "+q.showAverageTime());
+//		MLMS  q1= new MLMS(alpha.get(2),3);
+//		
+//		q1.Simulate();
+//		System.out.println(q1.getPolicy()+" "+q1.postNumbers()+" :"+q1.getTime()+"  "+q1.showAverageTime());
+//	   q= new MLMS(alpha.get(2),5);
+//		
+//		q.Simulate();
+//		System.out.println(q.getPolicy()+" "+q.postNumbers()+" :"+q.getTime()+"  "+q.showAverageTime());
+	}
 		
 // customer, clerk, event, arrival event, service-starts event, service-completed event, 
 //transfer event, monitor, line of service, collection of events, collection
 		//of customers, collection of lines
 		
-		
+	
+	
+	
+	
+		public static LinkedList<LinkedList<Customer>> theData(){
+		LinkedList<LinkedList<Customer>>alpha= new LinkedList<>();
 		//TEST
-			
+		
 			String parentDirectory; 		
 			parentDirectory = "inputFiles"; 
 			Scanner parameters;
@@ -45,26 +75,28 @@ public class MainReader {
 				while(parameters.hasNext()) {
 					String s= parameters.nextLine(); 
 					todo.add(s);
-					//StringTokenizer st= new StringTokenizer(s,", ");
 					}
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				System.out.println("No file");
 				e.printStackTrace();
 			} 
 			
 			
 			for(String s:todo) {
+				LinkedList<Customer>cl= new LinkedList<>();
+				
 				Scanner parameters2;
 				try {
+					
 					parameters2 = new Scanner(new File(parentDirectory, s));
 					//Informacion dentro de los documentos.
 					while(parameters2.hasNext()) {
+						
 						String data= parameters2.nextLine(); 
 						System.out.println(data);
+						
 						StringTokenizer st= new StringTokenizer(data," ");
-						System.out.println(st.nextToken());
-						System.out.println(st.nextToken());
+						cl.add(new Customer(Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken())));
 						
 						}
 				} catch (FileNotFoundException e) {
@@ -73,44 +105,13 @@ public class MainReader {
 					e.printStackTrace();
 				} 
 				
-				
+				alpha.add(cl);
 				
 			}
+			return alpha;
+		}
 				
-				
-//				while(st.hasMoreTokens()) {
-//					x=Integer.parseInt(st.nextToken());
-//					y=Integer.parseInt(st.nextToken());
-//					System.out.println(x+" "+y);
-//					Job j= new Job(id,x,y);
-//					inputQueue.enqueue(j);
-//					id++;
-//					
-//				}
-//				}
-//				
-//				parameters.close();
-//				ArrayQueue<Job> processingQueue= new ArrayQueue<>();
-//				ArrayList<Job> terminatedJobs= new ArrayList<>();
-//				int time=0;
-//				
-//				while(!inputQueue.isEmpty() || !processingQueue.isEmpty()) {
-//					if(!processingQueue.isEmpty()) {
-//						processingQueue.first().isServed(1);
-//						if(processingQueue.first().getRemainingTime()==0) {
-//							processingQueue.first().setDepartureTime(time);
-//							terminatedJobs.add(processingQueue.dequeue());
-//						}
-//						else {
-//							processingQueue.enqueue(processingQueue.dequeue());
-//						}
-//					}
-//					
-//						if(!inputQueue.isEmpty() && inputQueue.first().getArrivalTime()==time) {
-//							processingQueue.enqueue(inputQueue.dequeue());}
-//						
-//					time++;
-//					
+
 //				}
 //				double ave=0;
 //				for(int i=0;i<terminatedJobs.size();i++) {
@@ -119,6 +120,6 @@ public class MainReader {
 //				System.out.printf("Average Time: %.2f",(ave/(terminatedJobs.size())));
 //			
 //				
-		
+
 		}
-}
+
