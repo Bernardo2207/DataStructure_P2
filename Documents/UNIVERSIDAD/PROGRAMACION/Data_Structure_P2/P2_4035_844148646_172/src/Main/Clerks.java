@@ -31,4 +31,7 @@ private Customer c;
 	public Customer removeCustomer() {
 		return fila.removeFirst();
 	}
+	public Customer removeLast() {
+		return fila.pollLast();
+	}
 }

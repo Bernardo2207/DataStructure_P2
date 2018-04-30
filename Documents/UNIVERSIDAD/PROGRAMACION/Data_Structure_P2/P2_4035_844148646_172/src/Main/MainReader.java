@@ -8,6 +8,8 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import policies.MLMS;
+import policies.MLMSBLL;
+import policies.Policie;
 import policies.SLMS;
 
 public class MainReader {
@@ -16,51 +18,26 @@ public class MainReader {
 		//Instace of Deque
 		LinkedList<LinkedList<Customer>>alpha= theData();
 		LinkedList<Customer>x= new LinkedList<>();
-//		Customer a= new Customer(0,5);
-//		Customer b= new Customer(1,5);
-//		Customer c= new Customer(2,10);
-//		Customer cd= new Customer(3,5);
-//		Customer a1=new Customer(5,5);
-//		x.add(a);
-//		x.add(b);
-//		x.add(c);
-//		x.add(cd);
-//		x.add(a1);
-		x.add(new Customer(0,1));
-		x.add(new Customer(0,1));
-		x.add(new Customer(0,2));
-//		x.add(new Customer(1,3));
-//		x.add(new Customer(1,4));
-//		x.add(new Customer(2,1));
-//		x.add(new Customer(2,1));
-//		x.add(new Customer(2,1));
-//		x.add(new Customer(2,1));
-//		x.add(new Customer(3,4));
-//		x.add(new Customer(3,3));
-//		x.add(new Customer(3,2));
-//		x.add(new Customer(3,1));
 		
-		MLMS q= new MLMS(x,5);
+		SLMS q= new SLMS(alpha.get(2),1);
+		SLMS q2= new SLMS(alpha.get(2),3);
+		SLMS q3= new SLMS(alpha.get(2),5);
 		
 		q.Simulate();
-		System.out.println(q.getPolicy()+" "+q.postNumbers()+" :"+q.getTime()+"  "+q.showAverageTime());
-//		MLMS  q1= new MLMS(alpha.get(2),3);
-//		
-//		q1.Simulate();
-//		System.out.println(q1.getPolicy()+" "+q1.postNumbers()+" :"+q1.getTime()+"  "+q1.showAverageTime());
-//	   q= new MLMS(alpha.get(2),5);
-//		
-//		q.Simulate();
-//		System.out.println(q.getPolicy()+" "+q.postNumbers()+" :"+q.getTime()+"  "+q.showAverageTime());
+		q2.Simulate();
+		q3.Simulate();
+		
+		showResult(q);
+		showResult(q2);
+		showResult(q3);
 	}
 		
 // customer, clerk, event, arrival event, service-starts event, service-completed event, 
 //transfer event, monitor, line of service, collection of events, collection
 		//of customers, collection of lines
-		
-	
-	
-	
+	public static void showResult(Policie q) {
+		System.out.println(q.getPolicy()+" "+q.postNumbers()+" :"+q.getTime()+"  "+q.showAverageTime());
+	}
 	
 		public static LinkedList<LinkedList<Customer>> theData(){
 		LinkedList<LinkedList<Customer>>alpha= new LinkedList<>();

@@ -6,7 +6,7 @@ import Main.Clerks;
 import Main.Customer;
 
 //Multiple Lines Multiple Servers
-public class MLMS {
+public class MLMS  implements Policie{
 
 	/*Under this policy, each service post has its own waiting line (one line per server).
 	 *  Once a person enters a waiting line, that person cannot transfer to another line, 
@@ -19,7 +19,7 @@ public class MLMS {
 */
 	
 	int posts,nCustomers;
-	double time=-1;
+	double time=0;
 	private double averageTime=0;
 	private LinkedList<Customer> customers;
 	private LinkedList<Customer> waitingList;
@@ -28,8 +28,9 @@ public class MLMS {
 
 	public MLMS(LinkedList<Customer> customers,int posts) {
 		//pre:Customers list must be ordered.
-		this.nCustomers=customers.size();
+		
 		this.customers=copy(customers);
+		this.nCustomers=this.customers.size();
 		this.posts=posts;
 		this.clerks=new Clerks[posts];
 		this.waitingList=new LinkedList<>();
@@ -39,7 +40,7 @@ public class MLMS {
 
 	public void Simulate() {
 		while(!Finished()) {
-			time++;
+			
 		for(Customer c: customers) {
 			if(c.getArrivalTime()==time) {
 				waitingList.add(c);
@@ -48,7 +49,7 @@ public class MLMS {
 		System.out.println(time+" "+waitingList.size());
 			addToPostDisponible();
 			Serve();
-			
+			time++;
 			
 		}	
 	}
@@ -56,14 +57,16 @@ public class MLMS {
 
 	public void addToPostDisponible() {
 		//Index of the clerks with the less people.
+		while(!waitingList.isEmpty()) {
 		int lowIndex=clerks[0].getCustomers();
 		int index=0;
-		
+	
 		for(int i=1;i<clerks.length;i++) {
 			if(clerks[i].getCustomers()<lowIndex)
 				index=i;
 		}
-			if(!waitingList.isEmpty()){
+		
+			
 				clerks[index].addCustomer(waitingList.removeFirst());
 			}
 		}
@@ -81,7 +84,7 @@ public class MLMS {
 			if(c.getFirst().getServiceTime()==0) {
 				System.out.println(time);
 				Customer tr=c.removeCustomer();
-				tr.setDepartureTime((int)time-tr.getArrivalTime());
+				tr.setDepartureTime((int)(time+1)-tr.getArrivalTime()-tr.getDepartureTime());
 				System.out.println("DepartureTime="+tr.getDepartureTime());
 				averageTime=averageTime+tr.getDepartureTime();
 				customers.remove(tr);

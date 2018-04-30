@@ -5,7 +5,7 @@ import Main.Clerks;
 import Main.Customer;
 
 //Single Line Multiple Servers
-public class SLMS {
+public class SLMS implements Policie{
 int posts,nCustomers;
 double time=0;
 private double averageTime=0;
@@ -26,16 +26,15 @@ public SLMS(LinkedList<Customer> customers,int posts) {
 }
 
 public void Simulate() {
-	while(!Finished()) {
+	while(!Finished()) {		
 	for(Customer c: customers) {
 		if(c.getArrivalTime()==time) {
 			waitingList.add(c);
 		}
 	}
-	time++;
 		addToPostDisponible();
 		Serve();
-		
+		time++;
 	}	
 }
 
@@ -52,19 +51,20 @@ public void addToPostDisponible() {
 public void Serve() {
 	for(Clerks c: clerks) {
 	if(c.getCustomers()!=0) {
-		if(c.getFirst().getServiceTime()==0) {
-			System.out.println(time);
-			Customer tr=c.removeCustomer();
-			tr.setDepartureTime((int)time-tr.getArrivalTime()-tr.getDepartureTime());
-			System.out.println("DepartureTime="+tr.getDepartureTime());
-			averageTime=averageTime+tr.getDepartureTime();
-			customers.remove(tr);
-		}
 		if(c.getCustomers()!=0) {
 			c.getFirst().setServiceTime(c.getFirst().getServiceTime()-1);
 			//System.out.println(time);
 			c.getFirst().setDepartureTime(c.getFirst().getDepartureTime()+1);
 		}
+		if(c.getFirst().getServiceTime()==0) {
+			System.out.println(time);
+			Customer tr=c.removeCustomer();
+			tr.setDepartureTime((int)(time+1)-tr.getArrivalTime()-tr.getDepartureTime());
+			System.out.println("DepartureTime="+tr.getDepartureTime());
+			averageTime=averageTime+tr.getDepartureTime();
+			customers.remove(tr);
+		}
+		
 		
 		
 		
@@ -92,7 +92,7 @@ public void createClerks() {
 	}
 }
 public String getPolicy() {
-	return "SMS";
+	return "SLMS";
 }
 public int postNumbers() {
 	return posts;
